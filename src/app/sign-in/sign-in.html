@@ -1,0 +1,59 @@
+<div class="bg-surface-950 w-screen h-screen flex justify-center items-center">
+  <div class="bg-surface-900 rounded-md flex p-10 px-12">
+    <div class="flex flex-col w-full">
+      <div class="flex items-center gap-2">
+        <img src="assets/images/icon.png" alt="Pluméo Icon" class="w-10 h-10" />
+        <h1 class="text-primary">Pluméo</h1>
+      </div>
+      <div class="flex flex-col gap-1 mt-5">
+        <div class="flex items-center gap-2 text-white">
+          <span class="pi pi-shield"></span>
+          <p>Vie privée respectée</p>
+        </div>
+        <div class="flex items-center gap-2 text-white">
+          <span class="pi pi-lock"></span>
+          <p>Echanges et données sécurisés</p>
+        </div>
+        <div class="flex items-center gap-2 text-white">
+          <span class="pi pi-desktop"></span>
+          <p>Multiplateforme et simple d'utilisation</p>
+        </div>
+      </div>
+      <div class="flex flex-col mt-5">
+        <div class="flex items-center gap-2 text-white hover:cursor-pointer underline">
+          <span>En savoir plus à propos de nous</span>
+          <span class="pi pi-arrow-right"></span>
+        </div>
+        <div class="flex items-center gap-2 text-white hover:cursor-pointer underline">
+          <span>Confidentialité</span>
+          <span class="pi pi-arrow-right"></span>
+        </div>
+      </div>
+    </div>
+    <div class="px-5">
+      <p-divider layout="vertical" />
+    </div>
+    <div class="p-4 space-y-4 w-full">
+      <h2 class="text-white font-bold text-md">Connexion</h2>
+      <div class="flex flex-col gap-2">
+        <label for="email">Adresse email</label>
+        <input pInputText id="email" [(ngModel)]="email" />
+      </div>
+      @if (isRegistering) {
+        <div class="flex flex-col gap-2">
+          <label for="username">Nom d'utilisateur</label>
+          <input pInputText id="username" [(ngModel)]="username" />
+        </div>
+      }
+      <div class="flex flex-col gap-2">
+        <label>Mot de passe</label>
+        <p-password [(ngModel)]="password" [toggleMask]="true" />
+        <a href="#" class="text-xs">J'ai oublié mon mot de passe</a>
+      </div>
+      <div class="w-full">
+        <p-button [label]="isRegistering ? 'Créer un compte' : 'Connexion'" severity="contrast" styleClass="w-full mx-auto" />
+      </div>
+      <span (click)="isRegistering = !isRegistering" class="text-sm cursor-pointer">{{ isRegistering ? 'Se connecter à un compte existant' : 'Créer un compte'}}</span>
+    </div>
+  </div>
+</div>
