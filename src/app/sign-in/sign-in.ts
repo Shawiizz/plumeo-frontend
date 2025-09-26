@@ -1,4 +1,6 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, OnInit, effect} from '@angular/core';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {toObservable} from '@angular/core/rxjs-interop';
 import {Button} from 'primeng/button';
 import {FormsModule} from '@angular/forms';
 import {InputText} from 'primeng/inputtext';
@@ -7,6 +9,8 @@ import {Divider} from 'primeng/divider';
 import {SecurityService} from '../services/security.service';
 import {ToastService} from '../services/toast.service';
 import {TranslocoService, TranslocoPipe} from '@jsverse/transloco';
+import {WebSocketService} from '../services/websocket.service';
+import {distinctUntilChanged} from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -25,11 +29,23 @@ export class SignIn {
   private readonly securityService = inject(SecurityService);
   private readonly toastService = inject(ToastService);
   private readonly translocoService = inject(TranslocoService);
+  private readonly webSocketService = inject(WebSocketService);
 
   email: string = "";
   username: string = "";
   password: string = "";
   isRegistering: boolean = false;
+
+  constructor() {
+    this.webSocketService.on('test-topic')
+      .pipe(takeUntilDestroyed())
+      .subscribe({
+        next: (message) => {
+          console.log(message);
+          this.toastService.showInfo(message);
+        }
+      });
+  }
 
   authenticate() {
     // Field validation
@@ -80,6 +96,8 @@ export class SignIn {
 
           // Handle successful login, e.g., store token, redirect, etc.
           this.clearForm();
+
+          this.webSocketService.connect(response.token)
         }
       });
     }

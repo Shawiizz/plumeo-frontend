@@ -10,6 +10,7 @@ import {routes} from './app.routes';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {providePrimeNG} from 'primeng/config';
 import {errorInterceptor} from './interceptors/error.interceptor';
+import {authInterceptor} from './interceptors/auth.interceptor';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {definePreset} from '@primeuix/themes';
 import {MessageService} from 'primeng/api';
@@ -73,7 +74,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([errorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
     provideAnimations(),
     MessageService,
     providePrimeNG({
