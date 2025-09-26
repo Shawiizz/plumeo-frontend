@@ -1,0 +1,72 @@
+{
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "email": "Email Address",
+      "password": "Password",
+      "username": "Username",
+      "submit": "Sign In",
+      "success": "Login Successful",
+      "welcome": "Welcome {{name}}!",
+      "switchToRegister": "Don't have an account? Sign Up",
+      "forgotPassword": "Forgot my password"
+    },
+    "register": {
+      "title": "Sign Up",
+      "submit": "Sign Up",
+      "success": "Registration Successful",
+      "message": "Your account has been created successfully.",
+      "switchToLogin": "Already have an account? Sign In"
+    },
+    "validation": {
+      "fieldsRequired": "Required Fields",
+      "fillAllFields": "Please fill in all required fields.",
+      "usernameRequired": "Username Required",
+      "enterUsername": "Please enter a username."
+    },
+    "forgotPassword": "I forgot my password"
+  },
+  "features": {
+    "privacy": "Privacy respected",
+    "security": "Secure exchanges and data",
+    "multiplatform": "Multiplatform and easy to use"
+  },
+  "links": {
+    "aboutUs": "Learn more about us",
+    "privacy": "Privacy"
+  },
+  "error": {
+    "auth": {
+      "badcredentials": "Invalid email or password",
+      "usernotfound": "User not found",
+      "failed": "Authentication failed",
+      "tokenexpired": "Session expired. Please log in again",
+      "tokeninvalid": "Invalid authentication token"
+    },
+    "validation": {
+      "failed": "Validation failed",
+      "email": {
+        "required": "Email address is required"
+      },
+      "password": {
+        "required": "Password is required"
+      }
+    },
+    "user": {
+      "alreadyexists": "A user with this email already exists",
+      "notauthenticated": "User is not authenticated"
+    },
+    "internal": {
+      "server": "An internal server error occurred. Please try again later"
+    },
+    "access": {
+      "denied": "Access denied. You don't have permission to perform this action"
+    },
+    "network": {
+      "general": "Network error. Please check your internet connection."
+    },
+    "notfound": "Resource not found",
+    "conflict": "Resource already exists",
+    "unknown": "An unexpected error occurred"
+  }
+}

@@ -1,11 +1,20 @@
-import {ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection} from '@angular/core';
+import {
+  ApplicationConfig,
+  isDevMode,
+  provideBrowserGlobalErrorListeners,
+  provideZonelessChangeDetection
+} from '@angular/core';
 import {provideRouter} from '@angular/router';
 import Aura from '@primeuix/themes/aura';
 import {routes} from './app.routes';
-import {provideHttpClient} from '@angular/common/http';
+import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {providePrimeNG} from 'primeng/config';
+import {errorInterceptor} from './interceptors/error.interceptor';
 import {provideAnimations} from '@angular/platform-browser/animations';
 import {definePreset} from '@primeuix/themes';
+import {MessageService} from 'primeng/api';
+import {TranslocoHttpLoader} from './transloco-loader';
+import {provideTransloco} from '@jsverse/transloco';
 
 const preset = definePreset(Aura, {
   semantic: {
@@ -64,8 +73,9 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([errorInterceptor])),
     provideAnimations(),
+    MessageService,
     providePrimeNG({
       theme: {
         preset: preset,
@@ -73,6 +83,16 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: true
         }
       }
+    }),
+    provideTransloco({
+      config: {
+        availableLangs: ['en', 'fr'],
+        defaultLang: 'en',
+        // Remove this option if your application doesn't support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslocoHttpLoader
     })
   ]
 };
