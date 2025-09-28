@@ -1,0 +1,18 @@
+<!-- Message Received -->
+<div *ngIf="!message.isOwn" class="flex items-start space-x-3">
+  <div class="w-8 h-8 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold text-xs">
+    {{ message.senderAvatar || 'S' }}
+  </div>
+  <div class="bg-surface-700 rounded-2xl rounded-tl-md px-4 py-2 max-w-xs">
+    <p class="text-white text-sm">{{ message.content }}</p>
+    <span class="text-surface-400 text-xs">{{ message.timestamp }}</span>
+  </div>
+</div>
+
+<!-- Message Sent -->
+<div *ngIf="message.isOwn" class="flex justify-end my-1">
+  <div class="bg-blue-500 rounded-2xl rounded-tr-md px-4 py-2 max-w-xs">
+    <p class="text-white text-sm">{{ message.content }}</p>
+    <span class="text-blue-200 text-xs">{{ message.timestamp }}</span>
+  </div>
+</div>

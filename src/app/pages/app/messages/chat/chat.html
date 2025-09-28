@@ -1,0 +1,86 @@
+<div class="w-full h-full flex flex-col relative">
+  <!-- Chat Header - Floating -->
+  <div class="absolute top-3 left-3 right-3 z-10 bg-surface-800/95 backdrop-blur-sm rounded-2xl shadow-xl border border-surface-700/50 p-4 flex items-center justify-between">
+    <!-- User Info -->
+    <div class="flex items-center space-x-3">
+      <p-avatar
+        label="S"
+        styleClass="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-semibold"
+        size="large">
+      </p-avatar>
+      <div>
+        <h3 class="text-white font-medium text-sm">Shawiiz_z2</h3>
+        <p class="text-surface-400 text-xs flex items-center">
+          <i class="pi pi-circle-fill text-green-400 text-xs mr-1"></i>
+          En ligne · pour la dernière fois le 28 Sep 2025 à 20:29
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center space-x-2">
+      <p-button
+        icon="pi pi-phone"
+        styleClass="!w-10 !h-10 !bg-yellow-400 hover:!bg-yellow-300 !text-black !rounded-full !p-0"
+        [text]="true">
+      </p-button>
+      <p-button
+        icon="pi pi-user"
+        styleClass="!w-10 !h-10 !bg-surface-700 hover:!bg-surface-600 !text-white !rounded-full !p-0"
+        [text]="true">
+      </p-button>
+      <p-button
+        icon="pi pi-ellipsis-v"
+        styleClass="!w-10 !h-10 !bg-surface-700 hover:!bg-surface-600 !text-white !rounded-full !p-0"
+        [text]="true">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Chat Messages Area -->
+  <div class="flex-1 p-4 overflow-y-auto my-24">
+    <div class="space-y-4">
+      <app-message
+        *ngFor="let message of messages; trackBy: trackByMessageId"
+        [message]="message">
+      </app-message>
+    </div>
+  </div>
+
+  <!-- Message Input Area - Floating -->
+  <div class="absolute bottom-3 left-3 right-3 z-10 bg-surface-800/95 backdrop-blur-sm rounded-2xl shadow-xl border border-surface-700/50 p-4">
+    <div class="flex items-center space-x-3">
+      <p-button
+        icon="pi pi-plus"
+        styleClass="!w-10 !h-10 !bg-surface-700 hover:!bg-surface-600 !text-white !rounded-full !p-0"
+        [text]="true">
+      </p-button>
+
+      <div class="flex-1 bg-surface-700 px-4 py-2 flex items-center space-x-2 rounded-2xl">
+        <textarea
+          pInputTextarea
+          [(ngModel)]="messageText"
+          (keydown)="onKeyDown($event)"
+          placeholder="Tapez votre message..."
+          class="flex-1 bg-surface-600 text-white placeholder-surface-400 outline-none text-sm border-none resize-none overflow-hidden !p-2 rounded-lg"
+          style="border: none; background: inherit;"
+          rows="1"
+          [autoResize]="true">
+        </textarea>
+
+        <p-button
+          icon="pi pi-face-smile"
+          styleClass="!text-surface-400 hover:!text-white !bg-transparent !border-none !p-1"
+          [text]="true">
+        </p-button>
+      </div>
+
+      <p-button
+        icon="pi pi-send"
+        (onClick)="sendMessage()"
+        styleClass="!w-10 !h-10 !bg-blue-500 hover:!bg-blue-400 !text-white !rounded-full !p-0"
+        [text]="true">
+      </p-button>
+    </div>
+  </div>
+</div>
