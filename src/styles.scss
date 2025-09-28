@@ -11,3 +11,20 @@ body {
   margin: 0;
   padding: 0;
 }
+
+// Gradients globaux
+.yellowGradient {
+  background: rgb(255, 239, 0);
+  background: -moz-linear-gradient(90deg, rgba(255, 239, 0, 1) 0%, rgba(255, 196, 0, 1) 100%);
+  background: -webkit-linear-gradient(90deg, rgba(255, 239, 0, 1) 0%, rgba(255, 196, 0, 1) 100%);
+  background: linear-gradient(90deg, rgba(255, 239, 0, 1) 0%, rgba(255, 196, 0, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ffef00", endColorstr="#ffc400", GradientType=1);
+}
+
+.greenGradient {
+  background: rgb(62, 255, 74);
+  background: -moz-linear-gradient(90deg, rgba(62, 255, 74, 1) 0%, rgba(86, 255, 107, 1) 100%);
+  background: -webkit-linear-gradient(90deg, rgba(62, 255, 74, 1) 0%, rgba(86, 255, 107, 1) 100%);
+  background: linear-gradient(90deg, rgba(62, 255, 74, 1) 0%, rgba(86, 255, 107, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#3eff4a", endColorstr="#56ff6b", GradientType=1);
+}

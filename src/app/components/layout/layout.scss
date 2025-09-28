@@ -1,0 +1,16 @@
+.layout-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  flex: 1;
+  padding-top: 4rem; /* Pour compenser le header fixed sur mobile */
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding-top: 0; /* Le header n'est plus fixed sur desktop */
+  }
+}

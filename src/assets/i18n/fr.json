@@ -22,7 +22,15 @@
       "fieldsRequired": "Champs requis",
       "fillAllFields": "Veuillez remplir tous les champs obligatoires.",
       "usernameRequired": "Nom d'utilisateur requis",
-      "enterUsername": "Veuillez saisir un nom d'utilisateur."
+      "enterUsername": "Veuillez saisir un nom d'utilisateur.",
+      "emailRequired": "L'adresse email est requise",
+      "emailInvalid": "Format d'email invalide",
+      "enterValidEmail": "Veuillez saisir une adresse email valide",
+      "passwordRequired": "Le mot de passe est requis"
+    },
+    "guard": {
+      "accessDenied": "Accès refusé",
+      "loginRequired": "Vous devez vous connecter avant d'accéder à l'application."
     },
     "forgotPassword": "J'ai oublié mon mot de passe"
   },

@@ -60,44 +60,56 @@ const handleHttpError = (
 
 const hasTranslationKey = (translocoService: TranslocoService, key: string): boolean => {
   try {
-    return translocoService.translate(key) !== key;
+    const translation = translocoService.translate(key);
+    return translation !== key && translation !== undefined && translation !== null;
   } catch {
     return false;
+  }
+};
+
+const getTranslationOrFallback = (translocoService: TranslocoService, key: string, fallback: string): string => {
+  try {
+    if (hasTranslationKey(translocoService, key)) {
+      return translocoService.translate(key);
+    }
+    return fallback;
+  } catch {
+    return fallback;
   }
 };
 
 const getDefaultErrorMessage = (status: number, translocoService: TranslocoService): string => {
   switch (status) {
     case 0:
-      return translocoService.translate('error.network.general', undefined, 'Network error. Please check your internet connection.');
+      return getTranslationOrFallback(translocoService, 'error.network.general', 'Network error. Please check your internet connection.');
     case 400:
-      return translocoService.translate('error.validation.failed', undefined, 'Validation failed');
+      return getTranslationOrFallback(translocoService, 'error.validation.failed', 'Validation failed');
     case 401:
-      return translocoService.translate('error.auth.failed', undefined, 'Authentication failed');
+      return getTranslationOrFallback(translocoService, 'error.auth.failed', 'Authentication failed');
     case 403:
-      return translocoService.translate('error.access.denied', undefined, 'Access denied');
+      return getTranslationOrFallback(translocoService, 'error.access.denied', 'Access denied');
     case 404:
-      return translocoService.translate('error.notfound', undefined, 'Resource not found');
+      return getTranslationOrFallback(translocoService, 'error.notfound', 'Resource not found');
     case 409:
-      return translocoService.translate('error.conflict', undefined, 'Resource already exists');
+      return getTranslationOrFallback(translocoService, 'error.conflict', 'Resource already exists');
     case 422:
-      return translocoService.translate('error.validation.failed', undefined, 'Validation failed');
+      return getTranslationOrFallback(translocoService, 'error.validation.failed', 'Validation failed');
     case 500:
     case 502:
     case 503:
     case 504:
-      return translocoService.translate('error.internal.server', undefined, 'Internal server error. Please try again later.');
+      return getTranslationOrFallback(translocoService, 'error.internal.server', 'Internal server error. Please try again later.');
     default:
-      return translocoService.translate('error.unknown', undefined, `An unexpected error occurred (${status})`);
+      return getTranslationOrFallback(translocoService, 'error.unknown', `An unexpected error occurred (${status})`);
   }
 };
 
 const getDefaultErrorTitle = (status: number, translocoService: TranslocoService): string => {
   if (status >= 400 && status < 500) {
-    return translocoService.translate('error.client.title', undefined, 'Request Error');
+    return getTranslationOrFallback(translocoService, 'error.client.title', 'Request Error');
   } else if (status >= 500) {
-    return translocoService.translate('error.server.title', undefined, 'Server Error');
+    return getTranslationOrFallback(translocoService, 'error.server.title', 'Server Error');
   }
 
-  return translocoService.translate('error.general.title', undefined, 'Error');
+  return getTranslationOrFallback(translocoService, 'error.general.title', 'Error');
 };

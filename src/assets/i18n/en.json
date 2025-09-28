@@ -22,7 +22,15 @@
       "fieldsRequired": "Required Fields",
       "fillAllFields": "Please fill in all required fields.",
       "usernameRequired": "Username Required",
-      "enterUsername": "Please enter a username."
+      "enterUsername": "Please enter a username.",
+      "emailRequired": "Email address is required",
+      "emailInvalid": "Invalid email format",
+      "enterValidEmail": "Please enter a valid email address",
+      "passwordRequired": "Password is required"
+    },
+    "guard": {
+      "accessDenied": "Access Denied",
+      "loginRequired": "You must log in before accessing the application."
     },
     "forgotPassword": "I forgot my password"
   },

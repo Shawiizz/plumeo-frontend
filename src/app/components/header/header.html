@@ -1,0 +1,36 @@
+<div class="yellowGradient flex h-16 md:top-0 bottom-0 md:relative fixed w-full items-center justify-around">
+  <div class="md:flex hidden left items-center cursor-pointer">
+    <img
+      alt=""
+      src="assets/images/icon.png"
+      class="h-10 w-auto mr-2.5 brightness-0"
+    />
+    <a routerLink="/app" class="font-bold text-3xl text-black">
+      Pluméo
+    </a>
+  </div>
+  
+  <div class="flex md:gap-4 w-full justify-evenly md:justify-center md:w-auto items-center">
+    <a routerLink="/app" class="md:hidden block cursor-pointer">
+      <i class="pi pi-home text-black" style="font-size: 2.5rem;"></i>
+    </a>
+    <a
+      routerLink="/app/messages"
+      class="flex items-center justify-center navigate cursor-pointer"
+    >
+      <i class="pi pi-comments text-black" style="font-size: 1.3rem;"></i>
+    </a>
+    <a routerLink="/app/search" class="flex items-center justify-center cursor-pointer">
+      <i class="pi pi-search text-black" style="font-size: 1.3rem;"></i>
+    </a>
+    <a routerLink="/app/notifications" class="flex items-center justify-center cursor-pointer">
+      <i class="pi pi-bell text-black" style="font-size: 1.3rem;"></i>
+    </a>
+    <a routerLink="/app/profile" class="flex items-center justify-center cursor-pointer">
+      <i class="pi pi-user text-black" style="font-size: 1.3rem;"></i>
+    </a>
+    <button (click)="logout()" class="flex items-center justify-center cursor-pointer bg-red-500 hover:bg-red-600 rounded-full p-2 transition-colors">
+      <i class="pi pi-sign-out text-white" style="font-size: 1.3rem;"></i>
+    </button>
+  </div>
+</div>
