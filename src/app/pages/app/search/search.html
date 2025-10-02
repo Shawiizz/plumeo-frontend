@@ -1,0 +1,307 @@
+<div class="w-full h-full flex flex-col bg-surface-950">
+  <!-- Search Header -->
+  <div class="p-6 pb-4">
+    <div class="max-w-4xl mx-auto">
+      <!-- Search Bar -->
+      <div class="relative mb-6">
+        <div class="flex items-center space-x-4">
+          <!-- Search Input -->
+          <div class="flex-1 relative">
+            <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-surface-400">
+              <i class="pi pi-search text-lg"></i>
+            </div>
+            <input
+              #searchInput
+              type="text"
+              [(ngModel)]="searchQuery"
+              (keydown.enter)="onSearch()"
+              placeholder="Rechercher des utilisateurs, publications, groupes..."
+              class="w-full pl-12 pr-12 py-4 bg-surface-800/50 backdrop-blur-sm border border-surface-700/50 rounded-2xl text-white placeholder-surface-400 focus:outline-none focus:border-blue-500/50 focus:bg-surface-800/80 focus:shadow-lg focus:shadow-blue-500/20 focus:-translate-y-0.5 transition-all duration-300 text-lg">
+            
+            <!-- Clear Button -->
+            <button
+              *ngIf="searchQuery"
+              (click)="clearSearch()"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-surface-400 hover:text-white transition-colors">
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+          
+          <!-- Search Button -->
+          <p-button
+            icon="pi pi-search"
+            (onClick)="onSearch()"
+            [loading]="isSearching"
+            styleClass="!w-14 !h-14 !bg-blue-500 hover:!bg-blue-400 !text-white !rounded-2xl !p-0"
+            [text]="true">
+          </p-button>
+        </div>
+        
+        <!-- Search Filters -->
+        <div class="flex items-center space-x-2 mt-4 overflow-x-auto pb-2" *ngIf="hasSearched">
+          <button
+            *ngFor="let filter of searchFilters"
+            (click)="onFilterChange(filter)"
+            [class]="'flex items-center space-x-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 whitespace-nowrap filter-shimmer hover:-translate-y-0.5 hover:shadow-md ' + 
+                     (selectedFilter?.value === filter.value ? 
+                      'bg-blue-500 text-white shadow-lg shadow-blue-500/30 animate-pulse' : 
+                      'bg-surface-700/50 text-surface-300 hover:bg-surface-600/50 hover:text-white hover:shadow-surface-600/30')">
+            <i [class]="filter.icon"></i>
+            <span>{{ filter.label }}</span>
+            <span *ngIf="filter.count > 0" 
+                  class="bg-surface-900/50 px-2 py-0.5 rounded-lg text-xs">
+              {{ filter.count }}
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Content -->
+  <div class="flex-1 overflow-y-auto px-6 custom-scrollbar">
+    <div class="max-w-4xl mx-auto pb-6">
+      
+      <!-- Loading State -->
+      <div *ngIf="isSearching" class="text-center py-12 animate-fade-in">
+        <div class="animate-spin w-12 h-12 border-4 border-blue-500/30 border-t-blue-500 rounded-full mx-auto mb-4 drop-shadow-lg shadow-blue-500/50"></div>
+        <p class="text-surface-400 animate-pulse">Recherche en cours...</p>
+      </div>
+
+      <!-- Search Results -->
+      <div *ngIf="hasSearched && !isSearching && filteredResults.length > 0" class="space-y-4">
+        <h2 class="text-white font-semibold text-lg mb-4 flex items-center">
+          <i class="pi pi-search mr-2 text-blue-400"></i>
+          Résultats de recherche ({{ filteredResults.length }})
+        </h2>
+        
+        <div class="grid gap-4">
+          <div *ngFor="let result of filteredResults; trackBy: trackByResult; let i = index"
+               (click)="onResultClick(result)"
+               class="group bg-surface-800/50 backdrop-blur-sm rounded-2xl p-4 border border-surface-700/50 hover:border-surface-600/50 hover:bg-surface-700/50 transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl hover:shadow-surface-900/20 animate-fade-in"
+               [style.animation-delay]="(i * 100) + 'ms'">
+            
+            <!-- User Result -->
+            <div *ngIf="result.type === 'user'" class="flex items-center space-x-4">
+              <div class="relative">
+                <p-avatar
+                  [label]="result.avatar"
+                  styleClass="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-semibold"
+                  size="large">
+                </p-avatar>
+                
+                <!-- Online Status -->
+                <div *ngIf="result.isOnline" 
+                     class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-surface-800 online-pulse">
+                </div>
+                
+                <!-- Verified Badge -->
+                <div *ngIf="result.isVerified" 
+                     class="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg shadow-blue-500/30 animate-bounce">
+                  <i class="pi pi-check text-white text-xs"></i>
+                </div>
+              </div>
+              
+              <div class="flex-1">
+                <h3 class="text-white font-medium group-hover:text-blue-400 transition-colors">
+                  {{ result.title }}
+                </h3>
+                <p class="text-surface-400 text-sm">{{ result.subtitle }}</p>
+                <p class="text-surface-300 text-sm mt-1" *ngIf="result.description">
+                  {{ result.description }}
+                </p>
+                <p class="text-surface-500 text-xs mt-1" *ngIf="getOnlineStatus(result)">
+                  <i class="pi pi-circle-fill mr-1" 
+                     [class]="result.isOnline ? 'text-green-400' : 'text-surface-500'"></i>
+                  {{ getOnlineStatus(result) }}
+                </p>
+              </div>
+              
+              <div class="text-surface-400 group-hover:text-white transition-all duration-300 group-hover:translate-x-1">
+                <i class="pi pi-chevron-right"></i>
+              </div>
+            </div>
+
+            <!-- Post Result -->
+            <div *ngIf="result.type === 'post'" class="flex items-start space-x-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/30 group-hover:shadow-purple-500/50 transition-all duration-300 group-hover:scale-110">
+                <i class="pi pi-file text-white"></i>
+              </div>
+              
+              <div class="flex-1">
+                <h3 class="text-white font-medium group-hover:text-blue-400 transition-colors">
+                  {{ result.title }}
+                </h3>
+                <p class="text-surface-400 text-sm">{{ result.subtitle }}</p>
+                <p class="text-surface-300 text-sm mt-2" *ngIf="result.description">
+                  {{ result.description }}
+                </p>
+                <div class="flex items-center space-x-4 mt-2" *ngIf="result.lastActivity">
+                  <span class="text-surface-500 text-xs">
+                    {{ result.lastActivity | date:'dd MMM yyyy' }}
+                  </span>
+                </div>
+              </div>
+              
+              <div class="text-surface-400 group-hover:text-white transition-all duration-300 group-hover:translate-x-1">
+                <i class="pi pi-chevron-right"></i>
+              </div>
+            </div>
+
+            <!-- Group Result -->
+            <div *ngIf="result.type === 'group'" class="flex items-center space-x-4">
+              <p-avatar
+                [label]="result.avatar"
+                styleClass="bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold"
+                size="large">
+              </p-avatar>
+              
+              <div class="flex-1">
+                <h3 class="text-white font-medium group-hover:text-blue-400 transition-colors">
+                  {{ result.title }}
+                </h3>
+                <p class="text-surface-400 text-sm">{{ result.subtitle }}</p>
+                <p class="text-surface-300 text-sm mt-1" *ngIf="result.description">
+                  {{ result.description }}
+                </p>
+                <div class="flex items-center space-x-4 mt-2">
+                  <span class="text-surface-500 text-xs flex items-center">
+                    <i class="pi pi-users mr-1"></i>
+                    {{ formatMemberCount(result.memberCount || 0) }} membres
+                  </span>
+                  <span class="text-surface-500 text-xs flex items-center">
+                    <i class="pi pi-file mr-1"></i>
+                    {{ result.postCount }} posts
+                  </span>
+                </div>
+              </div>
+              
+              <div class="text-surface-400 group-hover:text-white transition-all duration-300 group-hover:translate-x-1">
+                <i class="pi pi-chevron-right"></i>
+              </div>
+            </div>
+
+            <!-- Hashtag Result -->
+            <div *ngIf="result.type === 'hashtag'" class="flex items-center space-x-4">
+              <div class="w-12 h-12 bg-gradient-to-r from-pink-400 to-red-500 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/30 group-hover:shadow-pink-500/50 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
+                <i class="pi pi-hashtag text-white text-lg"></i>
+              </div>
+              
+              <div class="flex-1">
+                <h3 class="text-white font-medium group-hover:text-blue-400 transition-colors">
+                  {{ result.title }}
+                </h3>
+                <p class="text-surface-300 text-sm" *ngIf="result.description">
+                  {{ result.description }}
+                </p>
+              </div>
+              
+              <div class="text-surface-400 group-hover:text-white transition-all duration-300 group-hover:translate-x-1">
+                <i class="pi pi-chevron-right"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results -->
+      <div *ngIf="hasSearched && !isSearching && filteredResults.length === 0" 
+           class="text-center py-12 animate-fade-in">
+        <div class="w-20 h-20 bg-surface-800/50 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+          <i class="pi pi-search text-surface-400 text-2xl"></i>
+        </div>
+        <h3 class="text-white font-medium mb-2 animate-pulse">Aucun résultat trouvé</h3>
+        <p class="text-surface-400 text-sm mb-4">
+          Essayez avec d'autres mots-clés ou vérifiez l'orthographe
+        </p>
+      </div>
+
+      <!-- Default State - No search performed -->
+      <div *ngIf="!hasSearched && !isSearching" class="space-y-8 animate-fade-in">
+        
+        <!-- Recent Searches -->
+        <div *ngIf="recentSearches.length > 0">
+          <h2 class="text-white font-semibold text-lg mb-4 flex items-center">
+            <i class="pi pi-history mr-2 text-purple-400"></i>
+            Recherches récentes
+          </h2>
+          <div class="flex flex-wrap gap-2">
+            <button
+              *ngFor="let search of recentSearches; let i = index"
+              (click)="onRecentSearchClick(search)"
+              class="bg-surface-700/50 hover:bg-surface-600/50 text-surface-300 hover:text-white px-4 py-2 rounded-xl text-sm transition-all duration-300 flex items-center space-x-2 group hover:-translate-y-0.5 hover:shadow-md hover:shadow-surface-600/30 animate-fade-in filter-shimmer"
+              [style.animation-delay]="(i * 100) + 'ms'">
+              <i class="pi pi-history text-xs"></i>
+              <span>{{ search }}</span>
+              <i class="pi pi-arrow-right text-xs group-hover:translate-x-1 transition-transform duration-300"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Trending Hashtags -->
+        <div>
+          <h2 class="text-white font-semibold text-lg mb-4 flex items-center">
+            <i class="pi pi-bolt mr-2 text-yellow-400"></i>
+            Tendances
+          </h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <button
+              *ngFor="let hashtag of trendingHashtags; let i = index"
+              (click)="onHashtagClick(hashtag)"
+              class="bg-surface-800/50 backdrop-blur-sm hover:bg-surface-700/50 border border-surface-700/50 hover:border-surface-600/50 text-surface-300 hover:text-white p-4 rounded-2xl transition-all duration-300 group text-left hover:-translate-y-1 hover:rotate-1 hover:shadow-lg hover:shadow-surface-900/20 animate-fade-in"
+              [style.animation-delay]="(i * 100) + 'ms'">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center shadow-md shadow-yellow-500/30 group-hover:shadow-yellow-500/50 group-hover:scale-110 group-hover:animate-pulse transition-all duration-300">
+                  <i class="pi pi-hashtag text-white text-sm"></i>
+                </div>
+                <span class="font-medium group-hover:text-blue-400 transition-colors duration-300">{{ hashtag }}</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Suggested Users -->
+        <div>
+          <h2 class="text-white font-semibold text-lg mb-4 flex items-center">
+            <i class="pi pi-users mr-2 text-green-400"></i>
+            Utilisateurs suggérés
+          </h2>
+          <div class="grid gap-4">
+            <div *ngFor="let user of suggestedUsers; let i = index"
+                 (click)="onResultClick(user)"
+                 class="group bg-surface-800/50 backdrop-blur-sm rounded-2xl p-4 border border-surface-700/50 hover:border-surface-600/50 hover:bg-surface-700/50 transition-all duration-300 cursor-pointer hover:scale-[1.02] hover:-translate-y-1 hover:shadow-lg hover:shadow-surface-900/20 flex items-center space-x-4 animate-fade-in"
+                 [style.animation-delay]="(i * 150) + 'ms'">
+              
+              <div class="relative">
+                <p-avatar
+                  [label]="user.avatar"
+                  styleClass="bg-gradient-to-r from-blue-400 to-purple-500 text-white font-semibold"
+                  size="large">
+                </p-avatar>
+                
+                <div *ngIf="user.isOnline" 
+                     class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-surface-800 online-pulse">
+                </div>
+              </div>
+              
+              <div class="flex-1">
+                <h3 class="text-white font-medium group-hover:text-blue-400 transition-colors">
+                  {{ user.title }}
+                </h3>
+                <p class="text-surface-400 text-sm">{{ user.subtitle }}</p>
+                <p class="text-surface-300 text-sm mt-1">{{ user.description }}</p>
+              </div>
+              
+              <p-button
+                icon="pi pi-user-plus"
+                styleClass="!w-10 !h-10 !bg-blue-500 hover:!bg-blue-400 !text-white !rounded-xl !p-0"
+                [text]="true">
+              </p-button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>

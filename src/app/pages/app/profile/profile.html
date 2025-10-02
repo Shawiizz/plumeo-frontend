@@ -1,0 +1,201 @@
+<div class="w-full h-full flex flex-col relative bg-surface-950">
+  <!-- Profile Header - Banner Area -->
+  <div class="relative h-48 overflow-hidden animate-fade-in">
+    <!-- Banner Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800 animate-gradient-shift">
+    </div>
+    
+    <!-- Profile Info Overlay -->
+    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-surface-950/95 via-surface-950/60 to-transparent p-6 animate-slide-in-left">
+      <div class="flex items-end space-x-4">
+        <!-- Profile Avatar -->
+        <div class="relative">
+          <p-avatar
+            [label]="userProfile.avatar"
+            styleClass="bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold border-4 border-white/20 backdrop-blur-sm transition-all duration-300 hover:scale-110"
+            size="xlarge">
+          </p-avatar>
+          
+          <!-- Online Status Indicator -->
+          <div *ngIf="userProfile.isOnline" 
+               class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-3 border-surface-950 animate-pulse-glow">
+          </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="flex-1 text-white">
+          <h1 class="text-2xl font-bold mb-1">{{ userProfile.displayName }}</h1>
+          <p class="text-surface-300 text-sm flex items-center">
+            <i class="pi pi-circle-fill text-green-400 text-xs mr-2"></i>
+            {{ getOnlineStatus() }}
+          </p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center space-x-2" *ngIf="!isOwnProfile">
+          <p-button
+            icon="pi pi-user-plus"
+            label="Suivre"
+            (onClick)="onFollowClick()"
+            styleClass="!bg-blue-500 hover:!bg-blue-400 !text-white !border-blue-500 !rounded-xl button-shimmer">
+          </p-button>
+          
+          <p-button
+            icon="pi pi-envelope"
+            (onClick)="onMessageClick()"
+            styleClass="!w-10 !h-10 !bg-surface-700 hover:!bg-surface-600 !text-white !rounded-xl !p-0 transition-all duration-300 hover:scale-105"
+            [text]="true">
+          </p-button>
+        </div>
+
+        <!-- Edit Profile Button (Own Profile) -->
+        <div class="flex items-center space-x-2" *ngIf="isOwnProfile">
+          <p-button
+            icon="pi pi-pencil"
+            label="Modifier le profil"
+            (onClick)="onEditProfile()"
+            styleClass="!bg-surface-700 hover:!bg-surface-600 !text-white !border-surface-600 !rounded-xl button-shimmer">
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Content -->
+  <div class="flex-1 overflow-y-auto p-6 custom-scrollbar">
+    <div class="max-w-4xl mx-auto space-y-6 animate-fade-in">
+      
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-surface-800/50 backdrop-blur-sm rounded-2xl p-4 border border-surface-700/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/10">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-white">{{ userProfile.followersCount }}</div>
+            <div class="text-sm text-surface-400">Abonnement</div>
+          </div>
+        </div>
+        
+        <div class="bg-surface-800/50 backdrop-blur-sm rounded-2xl p-4 border border-surface-700/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-purple-500/10">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-white">{{ userProfile.followingCount }}</div>
+            <div class="text-sm text-surface-400">Abonné</div>
+          </div>
+        </div>
+        
+        <div class="bg-surface-800/50 backdrop-blur-sm rounded-2xl p-4 border border-surface-700/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-green-500/10">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-white">{{ userProfile.friendsCount }}</div>
+            <div class="text-sm text-surface-400">Ami</div>
+          </div>
+        </div>
+        
+        <div class="bg-surface-800/50 backdrop-blur-sm rounded-2xl p-4 border border-surface-700/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-yellow-500/10">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-white">{{ userProfile.stats.postsCount }}</div>
+            <div class="text-sm text-surface-400">Posts</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bio Section -->
+      <div class="bg-surface-800/50 backdrop-blur-sm rounded-2xl p-6 border border-surface-700/50 transition-all duration-300 hover:border-blue-500/30 hover:bg-surface-800/70" *ngIf="userProfile.bio">
+        <h2 class="text-white font-semibold mb-3 flex items-center">
+          <i class="pi pi-user mr-2 text-blue-400"></i>
+          À propos
+        </h2>
+        <p class="text-surface-300 leading-relaxed">{{ userProfile.bio }}</p>
+        <div class="mt-4 text-sm text-surface-400 flex items-center">
+          <i class="pi pi-calendar mr-2"></i>
+          Membre depuis {{ formatJoinDate() }}
+        </div>
+      </div>
+
+      <!-- Moments Section -->
+      <div class="bg-surface-800/50 backdrop-blur-sm rounded-2xl p-6 border border-surface-700/50 transition-all duration-300 hover:border-purple-500/30 hover:bg-surface-800/70">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-white font-semibold flex items-center">
+            <i class="pi pi-star mr-2 text-purple-400 animate-shimmer"></i>
+            Moments
+          </h2>
+          <p-button
+            *ngIf="isOwnProfile"
+            icon="pi pi-plus"
+            label="Ajouter"
+            (onClick)="onAddMoment()"
+            styleClass="!bg-purple-500 hover:!bg-purple-400 !text-white !text-xs !px-3 !py-1 !rounded-lg button-shimmer"
+            size="small">
+          </p-button>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div *ngFor="let moment of userProfile.moments; let i = index"
+               (click)="onMomentClick(moment)"
+               class="group p-4 bg-surface-700/50 rounded-xl border border-surface-600/50 hover:bg-surface-600/50 transition-all duration-300 cursor-pointer hover:scale-105 hover:-translate-y-1 animate-slide-in-left"
+               [style.animation-delay]="(i * 100) + 'ms'">
+            <div class="flex items-center space-x-3 mb-2">
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                   [style.background-color]="moment.color + '20'">
+                <i [class]="moment.icon" [style.color]="moment.color" class="text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <div class="text-white font-medium text-sm">{{ moment.title }}</div>
+                <div class="text-surface-400 text-xs">
+                  {{ moment.date | date:'dd MMM' }}
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Empty State -->
+          <div *ngIf="userProfile.moments.length === 0" 
+               class="col-span-full text-center py-8 text-surface-400 animate-fade-in">
+            <i class="pi pi-star text-4xl mb-2 opacity-50 animate-pulse"></i>
+            <p>Aucun moment partagé pour le moment</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Stats -->
+      <div class="bg-surface-800/50 backdrop-blur-sm rounded-2xl p-6 border border-surface-700/50 transition-all duration-300 hover:border-green-500/30 hover:bg-surface-800/70">
+        <h2 class="text-white font-semibold mb-4 flex items-center">
+          <i class="pi pi-chart-line mr-2 text-green-400 animate-pulse"></i>
+          Activité
+        </h2>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="text-center transition-all duration-300 hover:scale-105">
+            <div class="text-xl font-bold text-white mb-1 animate-fade-in">{{ userProfile.stats.likesReceived }}</div>
+            <div class="text-sm text-surface-400 flex items-center justify-center">
+              <i class="pi pi-heart mr-1 text-red-400 animate-pulse"></i>
+              J'aime reçus
+            </div>
+          </div>
+          
+          <div class="text-center transition-all duration-300 hover:scale-105">
+            <div class="text-xl font-bold text-white mb-1 animate-fade-in">{{ userProfile.stats.commentsCount }}</div>
+            <div class="text-sm text-surface-400 flex items-center justify-center">
+              <i class="pi pi-comment mr-1 text-blue-400"></i>
+              Commentaires
+            </div>
+          </div>
+          
+          <div class="text-center transition-all duration-300 hover:scale-105">
+            <div class="text-xl font-bold text-white mb-1 animate-fade-in">{{ userProfile.stats.sharesCount }}</div>
+            <div class="text-sm text-surface-400 flex items-center justify-center">
+              <i class="pi pi-share-alt mr-1 text-purple-400"></i>
+              Partages
+            </div>
+          </div>
+          
+          <div class="text-center transition-all duration-300 hover:scale-105">
+            <div class="text-xl font-bold text-white mb-1 animate-fade-in">{{ userProfile.stats.postsCount }}</div>
+            <div class="text-sm text-surface-400 flex items-center justify-center">
+              <i class="pi pi-file mr-1 text-yellow-400"></i>
+              Publications
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
